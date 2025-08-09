@@ -1,0 +1,28 @@
+
+<div class="w-80 h-screen bg-white border-r shadow-xl p-10 flex flex-col items-center">
+  <div class="flex flex-col items-center mb-12">
+    <div class="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mb-4 shadow-md">
+      <span class="text-4xl text-blue-600 font-extrabold tracking-tight">SX</span>
+    </div>
+    <h1 class="text-3xl font-extrabold text-blue-700 tracking-tight mb-1">StartupXpo</h1>
+    <span class="text-xs text-gray-400 font-medium">Empowering Innovators</span>
+  </div>
+  <nav class="w-full flex-1 space-y-3">
+    <ng-container *ngFor="let tab of tabs">
+      <button
+        type="button"
+        (click)="onTabClick(tab.key)"
+        [ngClass]="[
+          'w-full text-left py-3 px-5 rounded-xl flex items-center gap-4 transition-all duration-200 text-base',
+          activeTab === tab.key
+            ? 'bg-blue-600 text-white font-semibold shadow-lg scale-[1.03]'
+            : 'hover:bg-blue-50 hover:text-blue-700 text-gray-700'
+        ]"
+      >
+        <app-icon [name]="tab.icon" [active]="activeTab === tab.key"></app-icon>
+        <span class="tracking-wide">{{ tab.label }}</span>
+      </button>
+    </ng-container>
+  </nav>
+  <div class="mt-12 w-full border-t pt-8 text-center text-xs text-gray-400 font-medium">© 2024 StartupXpo</div>
+</div>

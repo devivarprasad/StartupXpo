@@ -1,0 +1,45 @@
+<section *ngIf="activeTab === 'messages'" class="animate-fade-in">
+  <div class="flex bg-white rounded-2xl shadow-lg overflow-hidden min-h-[500px]">
+    <!-- User List -->
+    <aside class="w-64 border-r bg-gradient-to-b from-blue-50 to-white p-6 flex flex-col">
+      <div class="font-bold text-blue-700 text-lg mb-6 tracking-tight">Chats</div>
+      <ul class="flex-1 space-y-2 overflow-y-auto">
+        <li *ngFor="let user of users" (click)="selectUser(user)"
+            [class.bg-blue-100]="selectedUser?.id === user.id"
+            class="p-3 rounded-xl cursor-pointer hover:bg-blue-50 flex items-center gap-3 transition-all duration-150">
+          <div class="w-10 h-10 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-bold text-lg">
+            {{ user.name.charAt(0) }}
+          </div>
+          <span class="font-medium text-gray-700">{{ user.name }}</span>
+        </li>
+      </ul>
+    </aside>
+    <!-- Chat Area -->
+    <div class="flex-1 flex flex-col bg-white">
+      <div *ngIf="selectedUser; else selectPrompt" class="flex-1 flex flex-col h-full">
+        <div class="border-b px-6 py-4 flex items-center gap-3 bg-blue-50">
+          <div class="w-10 h-10 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-bold text-lg">
+            {{ selectedUser.name.charAt(0) }}
+          </div>
+          <div class="font-semibold text-blue-700 text-lg">{{ selectedUser.name }}</div>
+        </div>
+        <div class="flex-1 p-6 overflow-y-auto flex flex-col gap-2 bg-gradient-to-b from-white to-blue-50">
+          <div *ngFor="let msg of chatMessages[selectedUser.id]" [ngClass]="{'self-end': msg.from === 'You', 'self-start': msg.from !== 'You'}">
+            <div [ngClass]="msg.from === 'You' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'"
+                 class="inline-block px-4 py-2 rounded-2xl shadow max-w-xs break-words">
+              <span class="block">{{ msg.text }}</span>
+              <span class="block text-xs mt-1 text-right opacity-70">{{ msg.time }}</span>
+            </div>
+          </div>
+        </div>
+        <form class="flex border-t p-4 gap-3 bg-white" (ngSubmit)="sendMessage()">
+          <input type="text" [(ngModel)]="newMessage" name="message" class="flex-1 border border-gray-200 rounded-full px-5 py-3 outline-none focus:ring-2 focus:ring-blue-200 transition" placeholder="Type a message..." autocomplete="off" />
+          <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-blue-700 transition shadow">Send</button>
+        </form>
+      </div>
+      <ng-template #selectPrompt>
+        <div class="flex-1 flex items-center justify-center text-gray-400 text-lg">Select a user to start chatting</div>
+      </ng-template>
+    </div>
+  </div>
+</section>

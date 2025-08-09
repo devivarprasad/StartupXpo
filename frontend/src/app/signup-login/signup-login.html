@@ -1,0 +1,67 @@
+<div class="max-w-md mx-auto mt-10 bg-white rounded-2xl shadow-lg p-8">
+  <!-- Single Tab Title -->
+  <div class="flex justify-center items-center mb-6">
+    <span class="text-2xl font-bold pb-2 text-gray-900 flex-1 text-center shadow-sm">
+      {{ activeTab === 'signup' ? 'Sign Up' : 'Login' }}
+    </span>
+  </div>
+
+  <!-- Role Switch (only for Sign Up) -->
+  <div class="flex justify-center mb-6" *ngIf="activeTab === 'signup'">
+    <button 
+      class="px-4 py-1 rounded-l-lg font-medium border border-gray-300"
+      [ngClass]="userType === 'founder' ? 'bg-gray-200 text-gray-900' : 'bg-white text-gray-700'"
+      (click)="userType = 'founder'"
+    >Founder</button>
+    <button 
+      class="px-4 py-1 rounded-r-lg font-medium border border-gray-300 border-l-0"
+      [ngClass]="userType === 'investor' ? 'bg-gray-200 text-gray-900' : 'bg-white text-gray-700'"
+      (click)="userType = 'investor'"
+    >Investor</button>
+  </div>
+
+  <!-- Sign Up Form -->
+  <form *ngIf="activeTab === 'signup'">
+    <div class="mb-4">
+      <label class="block text-gray-700 mb-1" for="name">Name:</label>
+      <input class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" id="name" />
+    </div>
+    <div class="mb-4">
+      <label class="block text-gray-700 mb-1" for="email">Email:</label>
+      <input class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" type="email" id="email" />
+    </div>
+    <div class="mb-4">
+      <label class="block text-gray-700 mb-1" for="password">Password:</label>
+      <input class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" type="password" id="password" />
+    </div>
+    <div class="mb-4 flex items-center">
+      <input type="checkbox" id="terms" class="mr-2" />
+      <label for="terms" class="text-gray-700 text-sm">I agree to the <span class="font-medium">Terms and Privacy Policy</span></label>
+    </div>
+    <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold shadow hover:bg-blue-700 transition">Create Account</button>
+  </form>
+
+  <!-- Login Form -->
+  <form *ngIf="activeTab === 'login'">
+    <div class="mb-4">
+      <label class="block text-gray-700 mb-1" for="login-email">Email:</label>
+      <input class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" type="email" id="login-email" />
+    </div>
+    <div class="mb-4">
+      <label class="block text-gray-700 mb-1" for="login-password">Password:</label>
+      <input class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" type="password" id="login-password" />
+    </div>
+    <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold shadow hover:bg-blue-700 transition">Login</button>
+  </form>
+
+  <div class="mt-6 text-center text-gray-500">
+    <ng-container *ngIf="activeTab === 'signup'">
+      Already have an account?
+      <a href="#" class="text-blue-600 font-medium hover:underline" (click)="switchTab('login', $event)">Sign in</a>
+    </ng-container>
+    <ng-container *ngIf="activeTab === 'login'">
+      Don't have an account?
+      <a href="#" class="text-blue-600 font-medium hover:underline" (click)="switchTab('signup', $event)">Sign up</a>
+    </ng-container>
+  </div>
+</div>

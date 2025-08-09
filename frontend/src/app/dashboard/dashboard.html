@@ -1,0 +1,22 @@
+<div class="flex min-h-screen bg-gradient-to-tr from-blue-50 to-white">
+  <!-- Sidebar -->
+  <app-sidebar [tabs]="tabs" [activeTab]="activeTab" (tabSwitched)="switchTab($event)">
+  </app-sidebar>
+
+  <!-- Content Area -->
+  <main class="flex-1 p-10 overflow-y-auto">
+
+    <app-home [activeTab]="activeTab"></app-home>
+
+    <app-startup [activeTab]="activeTab"></app-startup>
+
+    <app-upload-idea [activeTab]="activeTab"></app-upload-idea>
+
+    <app-request [activeTab]="activeTab"></app-request>
+
+    <app-message [activeTab]="activeTab"></app-message>
+
+    <app-profile [activeTab]="activeTab"></app-profile>
+
+  </main>
+</div>

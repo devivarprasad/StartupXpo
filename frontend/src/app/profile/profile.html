@@ -1,0 +1,49 @@
+
+<section *ngIf="activeTab==='profile' && !isEditing" class="w-full bg-white p-8 rounded-xl shadow-lg animate-fade-in">
+  <div class="flex flex-col md:flex-row gap-6 items-start w-full">
+    <div class="flex-shrink-0 flex items-center justify-center w-24 h-24 bg-blue-100 rounded-full mb-4 md:mb-0">
+      <ng-container *ngIf="profile.profilePicUrl; else noPic">
+        <img [src]="profile.profilePicUrl" alt="Profile Picture" class="w-24 h-24 rounded-full border object-cover" />
+      </ng-container>
+      <ng-template #noPic>
+        <span class="text-3xl text-blue-600 font-bold">{{ profile.name.charAt(0) }}</span>
+      </ng-template>
+    </div>
+    <div class="flex-1 w-full">
+      <h3 class="text-2xl font-bold mb-6 text-gray-800">My Profile</h3>
+      <div class="mb-4">
+        <div class="font-semibold text-lg text-gray-800 mb-1">{{ profile.name }}</div>
+        <div class="text-gray-500 text-sm mb-1">{{ profile.role }}</div>
+        <div class="text-gray-500 text-sm mb-1">{{ profile.email }}</div>
+      </div>
+      <button class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition self-start" (click)="editProfile()">Edit</button>
+    </div>
+  </div>
+</section>
+
+
+<section *ngIf="activeTab==='profile' && isEditing" class="w-full bg-white p-8 rounded-xl shadow-lg animate-fade-in">
+  <div class="flex flex-col md:flex-row gap-6 items-start w-full">
+    <div class="flex-shrink-0 flex items-center justify-center w-24 h-24 bg-blue-100 rounded-full mb-4 md:mb-0">
+      <ng-container *ngIf="newProfilePic || profile.profilePicUrl; else noEditPic">
+        <img [src]="newProfilePic || profile.profilePicUrl" alt="Profile Picture" class="w-24 h-24 rounded-full border object-cover" />
+      </ng-container>
+      <ng-template #noEditPic>
+        <span class="text-3xl text-blue-600 font-bold">{{ profile.name.charAt(0) }}</span>
+      </ng-template>
+    </div>
+    <div class="flex-1 w-full">
+      <h3 class="text-2xl font-bold mb-6 text-gray-800">Edit Profile</h3>
+      <form class="flex flex-col gap-5 w-full" (ngSubmit)="saveProfile()">
+        <input type="file" (change)="onProfilePicChange($event)" class="block" />
+        <input type="text" [(ngModel)]="profile.name" name="name" class="w-full border border-gray-200 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-200 outline-none transition" placeholder="Name" required />
+        <input type="email" [(ngModel)]="profile.email" name="email" class="w-full border border-gray-200 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-200 outline-none transition" placeholder="Email" required />
+        <input type="text" [(ngModel)]="profile.role" name="role" class="w-full border border-gray-200 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-200 outline-none transition" placeholder="Role" required />
+        <div class="flex gap-4">
+          <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">Save</button>
+          <button type="button" class="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-400 transition" (click)="cancelEdit()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

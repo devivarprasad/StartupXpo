@@ -1,0 +1,48 @@
+<ng-container *ngFor="let section of [
+  { key: 'sentRequests', title: 'Sent Requests', list: sentRequests, sent: true },
+  { key: 'receivedRequests', title: 'Received Requests', list: receivedRequests, sent: false }
+]">
+  <section *ngIf="activeTab === section.key" class="animate-fade-in">
+    <h3 class="text-2xl font-bold mb-6 text-gray-800">{{ section.title }}</h3>
+    <ul class="space-y-4">
+      <ng-container *ngFor="let req of section.list">
+        <li class="bg-white p-5 rounded-xl shadow flex justify-between items-center hover:shadow-lg transition-shadow">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+              <span class="text-lg text-blue-600 font-bold">{{ req.name.charAt(0) }}</span>
+            </div>
+            <span class="font-medium text-gray-700">{{ req.name }}</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <!-- Sent Requests: show status badge and Withdraw for Pending -->
+            <ng-container *ngIf="section.sent">
+              <span [ngClass]="{
+                'bg-blue-100 text-blue-700': req.status === 'Pending',
+                'bg-blue-600 text-white': req.status === 'Accepted',
+                'bg-blue-200 text-blue-700': req.status === 'Declined'
+              }" class="px-3 py-1 rounded-full text-xs font-semibold">
+                {{ req.status }}
+              </span>
+              <button *ngIf="req.status === 'Pending'" (click)="cancelRequest(req.id)" class="text-blue-600 hover:underline font-medium">Withdraw</button>
+            </ng-container>
+            <!-- Received Requests: show Accept/Decline for Pending, badge for others -->
+            <ng-container *ngIf="!section.sent">
+              <ng-container *ngIf="req.status === 'Pending'; else statusBadge">
+                <button (click)="acceptRequest(req.id)" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 font-medium">Accept</button>
+                <button (click)="rejectRequest(req.id)" class="bg-blue-100 text-blue-700 px-3 py-1 rounded hover:bg-blue-200 font-medium">Decline</button>
+              </ng-container>
+              <ng-template #statusBadge>
+                <span [ngClass]="{
+                  'bg-blue-600 text-white': req.status === 'Accepted',
+                  'bg-blue-200 text-blue-700': req.status === 'Declined'
+                }" class="px-3 py-1 rounded-full text-xs font-semibold">
+                  {{ req.status }}
+                </span>
+              </ng-template>
+            </ng-container>
+          </div>
+        </li>
+      </ng-container>
+    </ul>
+  </section>
+</ng-container>

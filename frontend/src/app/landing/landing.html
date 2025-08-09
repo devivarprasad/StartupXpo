@@ -1,0 +1,61 @@
+<div class="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+  <!-- Navbar -->
+  <nav class="w-full flex justify-between items-center px-12 py-8">
+    <div class="flex items-center space-x-2">
+      <!-- Logo (replace with your SVG or image) -->
+      <span class="text-blue-600 text-3xl font-bold">S</span>
+      <span class="text-2xl font-bold text-gray-800">StartupXpo</span>
+    </div>
+    <div class="flex space-x-8">
+      <button 
+        (click)="goToLogin()"
+        class="text-lg font-medium text-gray-800 hover:text-blue-600 focus:outline-none">
+        Login
+      </button>
+      <button 
+        (click)="goToSignup()"
+        class="text-lg font-medium text-gray-800 hover:text-blue-600 focus:outline-none">
+        Sign Up
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="flex flex-col items-center flex-1 justify-center w-full">
+    <h2 class="text-6xl font-bold text-gray-800 mb-4 text-center leading-tight">
+      <span class="block">Where Startups</span>
+      <span class="block">Meet Investors</span>
+    </h2>
+    <p class="text-xl text-gray-500 mb-8 text-center">
+      Upload your pitch. Find your match. Grow together.
+    </p>
+    <div class="flex space-x-4 mb-12">
+      <button 
+        (click)="goToSignup('founder')"
+        class="px-8 py-3 bg-blue-600 text-white rounded-lg text-lg font-semibold shadow hover:bg-blue-700 transition">
+        Join as Founder
+      </button>
+      <button 
+        (click)="goToSignup('investor')"
+        class="px-8 py-3 bg-white border border-gray-300 text-gray-800 rounded-lg text-lg font-semibold shadow hover:bg-gray-100 transition">
+        Join as Investor
+      </button>
+    </div>
+    <!-- Featured Startups -->
+    <div class="flex space-x-16 mt-8">
+      <div class="flex flex-col items-center">
+        <span class="text-2xl font-bold text-gray-800">InnoSynth</span>
+        <span class="text-gray-500">Innovate Your Workflow</span>
+      </div>
+      <div class="flex flex-col items-center">
+        <span class="text-2xl font-bold text-gray-800">EcoVista</span>
+        <span class="text-gray-500">See the Future of Sustainabi-</span>
+      </div>
+      <div class="flex flex-col items-center">
+        <span class="text-2xl font-bold text-gray-800">QuickHire</span>
+        <span class="text-gray-500">Transforming Hiring Proc</span>
+      </div>
+    </div>
+  </main>
+</div>
+  
