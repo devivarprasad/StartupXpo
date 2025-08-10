@@ -10,13 +10,13 @@ import com.startupxpo.backend.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -32,38 +32,40 @@ public class AuthService {
     
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+    
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     public ResponseEntity<?> registerUser(SignupRequest signupRequest) {
-        if (userRepository.existsByEmail(signupRequest.getEmail())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
+        try {
+            if (userRepository.existsByEmail(signupRequest.getEmail())) {
+                return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
+            }
+            
+            User user = new User();
+            user.setEmail(signupRequest.getEmail());
+            user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+
+            userRepository.save(user);
+
+            return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Registration failed! " + e.getMessage()));
         }
-        User user = new User();
-        user.setEmail(signupRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-
-        userRepository.save(user);
-
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
     
     public ResponseEntity<?> loginUser(LoginRequest loginRequest) {
         try {
-            // Find user by email
-            Optional<User> userOptional = userRepository.findByEmail(loginRequest.getEmail());
+            // Use Spring Security's AuthenticationManager for proper authentication
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    loginRequest.getEmail(), 
+                    loginRequest.getPassword()
+                )
+            );
             
-            if (userOptional.isEmpty()) {
-                return ResponseEntity.badRequest().body(new MessageResponse("Error: Invalid email or password!"));
-            }
-            
-            User user = userOptional.get();
-            
-            // Verify password
-            if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-                return ResponseEntity.badRequest().body(new MessageResponse("Error: Invalid email or password!"));
-            }
-            
-            // Load user details for JWT generation
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
+            // If we reach here, authentication was successful
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             
             // Generate JWT token
             String jwtToken = jwtUtil.generateToken(userDetails);
@@ -72,14 +74,16 @@ public class AuthService {
             LoginResponse loginResponse = new LoginResponse(
                 jwtToken,
                 "Bearer",
-                user.getEmail(),
+                userDetails.getUsername(),
                 "Login successful!"
             );
             
             return ResponseEntity.ok(loginResponse);
             
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Invalid email or password!"));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Login failed!"));
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Login failed! " + e.getMessage()));
         }
     }
 }
