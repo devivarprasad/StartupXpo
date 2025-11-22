@@ -1,0 +1,136 @@
+/* Sidebar Navigation Styles */
+.sidebar-container {
+  @apply w-80 h-screen bg-white border-r shadow-xl p-10 flex flex-col items-center;
+}
+
+.sidebar-brand {
+  @apply flex flex-col items-center mb-12;
+}
+
+.sidebar-logo {
+  @apply w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mb-4 shadow-md;
+}
+
+.sidebar-logo-text {
+  @apply text-4xl text-blue-600 font-extrabold tracking-tight;
+}
+
+.sidebar-brand-name {
+  @apply text-3xl font-extrabold text-blue-700 tracking-tight mb-1;
+}
+
+.sidebar-brand-tagline {
+  @apply text-xs text-gray-400 font-medium;
+}
+
+.sidebar-nav {
+  @apply w-full flex-1;
+}
+
+.sidebar-nav-list {
+  @apply space-y-3;
+}
+
+.sidebar-nav-item {
+  @apply list-none;
+}
+
+.sidebar-nav-button {
+  @apply w-full text-left py-3 px-5 rounded-xl flex items-center gap-4 transition-all duration-200 text-base;
+}
+
+.sidebar-nav-button:not(.active) {
+  @apply hover:bg-blue-50 hover:text-blue-700 text-gray-700;
+}
+
+.sidebar-nav-button.active {
+  @apply bg-blue-600 text-white font-semibold shadow-lg scale-[1.03];
+}
+
+.sidebar-nav-button:hover {
+  transform: translateY(-1px);
+}
+
+.sidebar-nav-button:focus {
+  @apply outline-none ring-2 ring-blue-400 ring-offset-2;
+}
+
+.sidebar-nav-icon {
+  @apply flex-shrink-0;
+}
+
+.sidebar-nav-text {
+  @apply tracking-wide;
+}
+
+.sidebar-footer {
+  @apply mt-12 w-full border-t pt-8 text-center;
+}
+
+.sidebar-copyright {
+  @apply text-xs text-gray-400 font-medium;
+}
+
+.sidebar-sr-only {
+  @apply sr-only;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .sidebar-container { @apply w-64 p-6; }
+  .sidebar-brand { @apply mb-8; }
+  .sidebar-logo { @apply w-16 h-16 mb-3; }
+  .sidebar-logo-text { @apply text-3xl; }
+  .sidebar-brand-name { @apply text-2xl; }
+  .sidebar-nav-button { @apply py-2.5 px-4 text-sm; }
+}
+
+@media (max-width: 768px) {
+  .sidebar-container { @apply w-full h-auto border-r-0 border-b shadow-lg; }
+  .sidebar-nav-list { @apply flex space-x-2 space-y-0 overflow-x-auto pb-2; }
+  .sidebar-nav-item { @apply flex-shrink-0; }
+  .sidebar-nav-button { @apply whitespace-nowrap; }
+}
+
+/* Animations */
+.sidebar-container {
+  animation: slideIn 0.3s ease-out;
+}
+
+.sidebar-nav-button {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-nav-button:hover {
+  transition: all 0.15s ease;
+}
+
+/* Focus States */
+.sidebar-nav-button:focus-visible {
+  @apply ring-2 ring-blue-400 ring-offset-2;
+}
+
+/* Hover Effects */
+.sidebar-logo:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+.sidebar-brand-name:hover {
+  color: #1d4ed8;
+  transition: color 0.2s ease;
+}
+
+/* Active State Animations */
+.sidebar-nav-button.active {
+  animation: activePulse 2s infinite;
+}
+
+@keyframes activePulse {
+  0%, 100% {
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1);
+  }
+  50% {
+    box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.2);
+  }
+}

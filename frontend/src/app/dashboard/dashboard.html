@@ -1,22 +1,45 @@
-<div class="flex min-h-screen bg-gradient-to-tr from-blue-50 to-white">
-  <!-- Sidebar -->
-  <app-sidebar [tabs]="tabs" [activeTab]="activeTab" (tabSwitched)="switchTab($event)">
-  </app-sidebar>
+<div class="dashboard-container">
+  <!-- Sidebar Navigation -->
+  <aside class="dashboard-sidebar" aria-label="Main navigation">
+    <app-sidebar
+      [tabs]="tabs"
+      [activeTab]="activeTab"
+      (tabSwitched)="switchTab($event)">
+    </app-sidebar>
+  </aside>
 
-  <!-- Content Area -->
-  <main class="flex-1 p-10 overflow-y-auto">
+  <!-- Main Content Area -->
+  <main class="dashboard-main" role="main" tabindex="-1">
+    <!-- Dashboard Overview -->
+    
+    <!-- Startup Management -->
+    
 
-    <app-home [activeTab]="activeTab"></app-home>
+    <!-- Idea Upload -->
+    <section
+      *ngIf="activeTab === 'upload'"
+      class="dashboard-section animate-fade-in"
+      role="region"
+      aria-labelledby="upload-idea-title">
+      <h2 id="upload-idea-title" class="dashboard-section-title sr-only">Upload Idea</h2>
+      <app-upload-idea></app-upload-idea>
+    </section>
+  
 
-    <app-startup [activeTab]="activeTab"></app-startup>
+    <!-- Connection Requests -->
+    
 
-    <app-upload-idea [activeTab]="activeTab"></app-upload-idea>
+    <!-- Messages -->
+    
 
-    <app-request [activeTab]="activeTab"></app-request>
-
-    <app-message [activeTab]="activeTab"></app-message>
-
-    <app-profile [activeTab]="activeTab"></app-profile>
-
+    <!-- User Profile -->
+    <section
+      *ngIf="activeTab === 'profile'"
+      class="dashboard-section animate-fade-in"
+      role="region"
+      aria-labelledby="profile-title">
+      <h2 id="profile-title" class="dashboard-section-title sr-only">User Profile</h2>
+      <app-profile></app-profile>
+    </section>
   </main>
 </div>

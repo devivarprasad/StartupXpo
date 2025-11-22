@@ -21,14 +21,14 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignupRequest signupRequest)
     {
-        logger.info("Received signup request for email: {}", signupRequest.getEmail());
+        logger.info("Received signup request for username: {}", signupRequest.getUsername());
         return authService.registerUser(signupRequest);
     }
 
     // Login endpoint: POST /api/auth/login
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
-        logger.info("Received login request for email: {}", loginRequest.getEmail());
+        logger.info("Received login request for username: {}", loginRequest.getUsername());
         return authService.loginUser(loginRequest);
     }
 }

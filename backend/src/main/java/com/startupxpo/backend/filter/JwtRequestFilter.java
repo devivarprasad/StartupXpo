@@ -33,9 +33,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                                     FilterChain chain) throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
+        logger.info("Authorization header received: {}",authHeader);
         String requestURI = request.getRequestURI();
 
-        logger.debug("Processing request: {} with auth header: {}", requestURI, authHeader != null ? "present" : "missing");
+        logger.info("Processing request: {} with auth header: {}", requestURI, authHeader != null ? "present" : "missing");
+        if (authHeader != null) {
+            String masked = authHeader.length() > 20 ? authHeader.substring(0, 10) + "..." + authHeader.substring(authHeader.length()-7) : authHeader;
+            logger.info("Authorization header (masked): {}", masked);
+        }
 
         String username = null;
         String jwt = null;
@@ -76,4 +81,3 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         chain.doFilter(request, response);
     }
 }
-

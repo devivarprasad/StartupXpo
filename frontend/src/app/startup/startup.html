@@ -1,29 +1,155 @@
-<section *ngIf="activeTab === 'saved'" class="animate-fade-in">
-      <h3 class="text-2xl font-bold mb-6 text-gray-800">Saved Startups</h3>
-      <p class="text-gray-500">List of bookmarked startups.</p>
-    </section>
+<!-- Saved Startups Section -->
+<section
+  *ngIf="activeTab === 'saved'"
+  class="startup-section animate-fade-in"
+  role="region"
+  aria-labelledby="saved-startups-title">
+  <header class="startup-header">
+    <h3 id="saved-startups-title" class="startup-title">Saved Startups</h3>
+    <p class="startup-subtitle">Your bookmarked startup opportunities</p>
+  </header>
+  <!-- Empty State -->
+  <div *ngIf="!savedStartups?.length" class="text-center py-12">
+    <div class="text-6xl mb-4">📚</div>
+    <p class="text-gray-500 text-lg">No saved startups yet</p>
+    <p class="text-gray-400">Browse startups and save the ones that interest you</p>
+  </div>
+</section>
 
-    <section *ngIf="activeTab === 'browse' || activeTab === 'myStartups'" class="animate-fade-in">
-      <h3 class="text-2xl font-bold mb-6 text-gray-800">Browse Startups</h3>
-      <div class="flex flex-col gap-8 w-full">
-        <!-- Example startup card, repeat for each startup -->
-        <div class="bg-white p-8 shadow rounded-xl hover:shadow-lg transition-shadow flex flex-col md:flex-row gap-6 w-full">
-          <div class="flex-shrink-0 flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full">
-            <span class="text-3xl text-blue-600 font-bold">H</span>
+<!-- Browse Startups Section -->
+<section
+  *ngIf="activeTab === 'browse' || activeTab === 'myStartups'"
+  class="startup-section animate-fade-in"
+  role="region"
+  aria-labelledby="browse-startups-title">
+  <header class="startup-header">
+    <h3 id="browse-startups-title" class="startup-title">
+      {{ activeTab === 'browse' ? 'Browse Startups' : 'My Startups' }}
+    </h3>
+    <p class="startup-subtitle">
+      {{ activeTab === 'browse' ? 'Discover innovative startups looking for investment' : 'Manage your startup portfolio' }}
+    </p>
+  </header>
+  <!-- Search and Filter Controls -->
+  <div class="mb-6 flex flex-col md:flex-row gap-4">
+    <div class="flex-1">
+      <label for="startup-search" class="sr-only">Search startups</label>
+      <input
+        type="search"
+        id="startup-search"
+        placeholder="Search startups by name, industry, or location..."
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()" />
+    </div>
+    <div class="flex gap-2">
+      <select
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+        [(ngModel)]="selectedIndustry"
+        (change)="onFilterChange()">
+        <option value="">All Industries</option>
+        <option *ngFor="let industry of industries" [value]="industry">{{ industry }}</option>
+      </select>
+      <select
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+        [(ngModel)]="selectedLocation"
+        (change)="onFilterChange()">
+        <option value="">All Locations</option>
+        <option *ngFor="let location of locations" [value]="location">{{ location }}</option>
+      </select>
+    </div>
+  </div>
+  <!-- Startups Grid -->
+  <div class="space-y-6">
+    <!-- Example Startup Card -->
+    <article class="startup-card">
+      <div class="flex flex-col md:flex-row gap-6">
+        <!-- Startup Avatar -->
+        <div class="startup-card-avatar" aria-hidden="true">
+          <span class="text-3xl text-blue-600 font-bold">H</span>
+        </div>
+        <!-- Startup Details -->
+        <div class="flex-1">
+          <header class="startup-card-header">
+            <h4 class="text-2xl font-semibold text-gray-800 mb-2">HealthTrack</h4>
+            <p class="text-gray-600 leading-relaxed">
+              AI-powered health monitoring platform that leverages machine learning to provide real-time health analytics and personalized recommendations for proactive healthcare management.
+            </p>
+          </header>
+          
+          <!-- Tags -->
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">Healthcare</span>
+            <span class="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-medium">AI/ML</span>
+            <span class="bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-xs font-medium">Analytics</span>
+            <span class="bg-orange-50 text-orange-700 px-3 py-1 rounded-full text-xs font-medium">B2B</span>
           </div>
-          <div class="flex-1">
-            <h4 class="text-2xl font-semibold mb-2">HealthTrack</h4>
-            <p class="text-gray-600 mb-2">AI health monitoring platform that leverages machine learning to provide real-time health analytics and personalized recommendations.</p>
-            <div class="flex flex-wrap gap-4 mb-2">
-              <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">Healthcare</span>
-              <span class="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-medium">AI</span>
-              <span class="bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-xs font-medium">Analytics</span>
+          
+          <!-- Company Info -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 mb-4">
+            <div>
+              <span class="font-semibold text-gray-700">Founder:</span> 
+              <span class="ml-1">Jane Doe</span>
             </div>
-            <div class="text-sm text-gray-500 mb-1"><span class="font-semibold">Founder:</span> Jane Doe</div>
-            <div class="text-sm text-gray-500 mb-1"><span class="font-semibold">Location:</span> San Francisco, CA</div>
-            <div class="text-sm text-gray-500"><span class="font-semibold">Funding:</span> $2M Seed</div>
+            <div>
+              <span class="font-semibold text-gray-700">Location:</span> 
+              <span class="ml-1">San Francisco, CA</span>
+            </div>
+            <div>
+              <span class="font-semibold text-gray-700">Funding:</span> 
+              <span class="ml-1">$2M Seed</span>
+            </div>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="flex flex-wrap gap-3">
+            <button 
+              type="button"
+              class="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors"
+              (click)="viewStartup('healthtrack')"
+              aria-label="View HealthTrack startup details">
+              View Details
+            </button>
+            
+            <button 
+              type="button"
+              class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-colors"
+              (click)="connectWithStartup('healthtrack')"
+              aria-label="Connect with HealthTrack founder">
+              Connect
+            </button>
+            
+            <button 
+              type="button"
+              class="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-colors"
+              (click)="saveStartup('healthtrack')"
+              [attr.aria-label]="isStartupSaved('healthtrack') ? 'Remove HealthTrack from saved' : 'Save HealthTrack to favorites'">
+              {{ isStartupSaved('healthtrack') ? 'Saved' : 'Save' }}
+            </button>
           </div>
         </div>
-        <!-- Add more startup cards here as needed, each will be full width and stacked vertically -->
       </div>
-    </section>
+    </article>
+    
+    <!-- More startup cards would be dynamically generated here -->
+    <div *ngFor="let startup of filteredStartups" class="bg-white p-8 shadow rounded-xl hover:shadow-lg transition-shadow">
+      <!-- Dynamic startup content would go here -->
+    </div>
+  </div>
+  
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="mt-8 flex justify-center">
+    <nav class="flex space-x-2" role="navigation" aria-label="Startup pagination">
+      <button 
+        *ngFor="let page of getPageNumbers()"
+        type="button"
+        class="px-3 py-2 rounded-lg border transition-colors"
+        [ngClass]="page === currentPage ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'"
+        (click)="goToPage(page)"
+        [attr.aria-current]="page === currentPage ? 'page' : null"
+        [attr.aria-label]="'Go to page ' + page">
+        {{ page }}
+      </button>
+    </nav>
+  </div>
+</section>

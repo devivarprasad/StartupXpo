@@ -1,0 +1,31 @@
+/* ========================================================================
+   Startup Component Styles (BEM & Accessibility)
+   ======================================================================== */
+
+.startup-section {
+  @apply w-full bg-white p-8 rounded-xl shadow-lg ;
+}
+
+.startup-header {
+  @apply mb-6;
+}
+
+.startup-title {
+  @apply text-2xl font-bold text-gray-800;
+}
+
+.startup-subtitle {
+  @apply text-gray-500;
+}
+
+.startup-card {
+  @apply bg-white p-8 shadow rounded-xl hover:shadow-lg transition-shadow;
+}
+
+.startup-card-avatar {
+  @apply flex-shrink-0 flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full;
+}
+
+.startup-card-header {
+  @apply mb-4;
+}

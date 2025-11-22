@@ -1,14 +1,185 @@
-.animate-fade-in {
-  animation: fadeIn 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+/* ==========================================================================
+   Dashboard Layout Styles
+   ========================================================================== */
+
+.dashboard-container {
+  @apply flex min-h-screen bg-gradient-to-tr from-blue-50 to-white;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
+/* ==========================================================================
+   Sidebar
+   ========================================================================== */
+.dashboard-sidebar {
+  @apply flex-shrink-0;
+}
+
+/* ==========================================================================
+   Main Content Area
+   ========================================================================== */
+.dashboard-main {
+  @apply flex-1 p-6 sm:p-8 lg:p-10 overflow-y-auto;
+}
+
+.dashboard-section {
+ 
+}
+
+/* ==========================================================================
+   Section Headers
+   ========================================================================== */
+.dashboard-section-header {
+  @apply mb-6;
+}
+
+.dashboard-section-title {
+  @apply text-2xl font-bold text-gray-800 mb-2;
+}
+
+.dashboard-section-subtitle {
+  @apply text-gray-600;
+}
+
+/* ==========================================================================
+   Content Transitions
+   ========================================================================== */
+.dashboard-section {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.dashboard-section:nth-child(1) { animation-delay: 0.1s; }
+.dashboard-section:nth-child(2) { animation-delay: 0.2s; }
+.dashboard-section:nth-child(3) { animation-delay: 0.3s; }
+.dashboard-section:nth-child(4) { animation-delay: 0.4s; }
+.dashboard-section:nth-child(5) { animation-delay: 0.5s; }
+.dashboard-section:nth-child(6) { animation-delay: 0.6s; }
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+@media (max-width: 768px) {
+  .dashboard-main {
+    @apply p-4;
   }
-  to {
-    opacity: 1;
-    transform: none;
+  
+  .dashboard-section-title {
+    @apply text-xl;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-main {
+    @apply p-12;
+  }
+  
+  .dashboard-section-title {
+    @apply text-3xl;
+  }
+}
+
+/* ==========================================================================
+   Loading States
+   ========================================================================== */
+.dashboard-loading {
+  @apply flex items-center justify-center h-64;
+}
+
+.dashboard-loading-spinner {
+  @apply animate-spin rounded-full border-2 border-gray-300 border-t-blue-600 w-8 h-8;
+}
+
+/* ==========================================================================
+   Empty States
+   ========================================================================== */
+.dashboard-empty {
+  @apply text-center py-16;
+}
+
+.dashboard-empty-icon {
+  @apply text-6xl mb-4 text-gray-300;
+}
+
+.dashboard-empty-title {
+  @apply text-xl font-medium text-gray-700 mb-2;
+}
+
+.dashboard-empty-subtitle {
+  @apply text-gray-500;
+}
+
+/* ==========================================================================
+   Error States
+   ========================================================================== */
+.dashboard-error {
+  @apply text-center py-16;
+}
+
+.dashboard-error-icon {
+  @apply text-6xl mb-4 text-red-300;
+}
+
+.dashboard-error-title {
+  @apply text-xl font-medium text-red-700 mb-2;
+}
+
+.dashboard-error-subtitle {
+  @apply text-red-500;
+}
+
+.dashboard-error-action {
+  @apply mt-4;
+}
+
+/* ==========================================================================
+   Focus Management
+   ========================================================================== */
+.dashboard-main:focus {
+  outline: none;
+}
+
+.dashboard-section:focus-within {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+@media print {
+  .dashboard-sidebar {
+    display: none;
+  }
+  
+  .dashboard-main {
+    @apply p-0;
+  }
+  
+  .dashboard-section {
+    @apply mb-8;
+  }
+}
+
+/* ==========================================================================
+   High Contrast Mode
+   ========================================================================== */
+@media (prefers-contrast: high) {
+  .dashboard-container {
+    @apply bg-white;
+  }
+  
+  .dashboard-section {
+    @apply border border-gray-300;
+  }
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-section {
+    animation: none;
+  }
+  
+  .dashboard-loading-spinner {
+    animation: none;
   }
 }

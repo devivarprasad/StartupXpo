@@ -1,67 +1,166 @@
-<div class="max-w-md mx-auto mt-10 bg-white rounded-2xl shadow-lg p-8">
-  <!-- Single Tab Title -->
-  <div class="flex justify-center items-center mb-6">
-    <span class="text-2xl font-bold pb-2 text-gray-900 flex-1 text-center shadow-sm">
-      {{ activeTab === 'signup' ? 'Sign Up' : 'Login' }}
-    </span>
-  </div>
+<main class="max-w-md mx-auto mt-10 bg-white rounded-2xl shadow-lg p-8">
+  <!-- Page Title -->
+  <header class="text-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">
+      {{ activeTab === 'signup' ? 'Create Account' : 'Welcome Back' }}
+    </h1>
+    <p class="text-sm text-gray-600 mt-2">
+      {{ activeTab === 'signup' ? 'Join StartupXpo to connect with investors' : 'Sign in to your account' }}
+    </p>
+  </header>
 
-  <!-- Role Switch (only for Sign Up) -->
-  <div class="flex justify-center mb-6" *ngIf="activeTab === 'signup'">
-    <button 
-      class="px-4 py-1 rounded-l-lg font-medium border border-gray-300"
-      [ngClass]="userType === 'founder' ? 'bg-gray-200 text-gray-900' : 'bg-white text-gray-700'"
-      (click)="userType = 'founder'"
-    >Founder</button>
-    <button 
-      class="px-4 py-1 rounded-r-lg font-medium border border-gray-300 border-l-0"
-      [ngClass]="userType === 'investor' ? 'bg-gray-200 text-gray-900' : 'bg-white text-gray-700'"
-      (click)="userType = 'investor'"
-    >Investor</button>
-  </div>
+  <!-- Role Selection (Sign Up Only) -->
+  <section *ngIf="activeTab === 'signup'" class="mb-6" role="group">
+    <div class="flex justify-center">
+      <div class="flex border border-gray-300 rounded-lg" role="radiogroup" aria-label="User type selection">
+        <button 
+          type="button"
+          class="px-4 py-2 rounded-l-lg font-medium border-r border-gray-300 transition-colors"
+          [ngClass]="userType === 'founder' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'"
+          (click)="userType = 'founder'; signupForm.role = 'founder'"
+          [attr.aria-pressed]="userType === 'founder'"
+          aria-label="Join as a startup founder">
+          Founder
+        </button>
+        <button 
+          type="button"
+          class="px-4 py-2 rounded-r-lg font-medium transition-colors"
+          [ngClass]="userType === 'investor' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'"
+          (click)="userType = 'investor'; signupForm.role = 'investor'"
+          [attr.aria-pressed]="userType === 'investor'"
+          aria-label="Join as an investor">
+          Investor
+        </button>
+      </div>
+    </div>
+  </section>
 
   <!-- Sign Up Form -->
-  <form *ngIf="activeTab === 'signup'">
-    <div class="mb-4">
-      <label class="block text-gray-700 mb-1" for="name">Name:</label>
-      <input class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" id="name" />
+  <form *ngIf="activeTab === 'signup'" (ngSubmit)="onSignupSubmit()" class="space-y-4" novalidate>
+    <div>
+      <label class="block text-gray-700 mb-2 font-medium" for="signup-username">
+        Username <span class="text-red-500" aria-label="required">*</span>
+      </label>
+      <input 
+        type="text" 
+        id="signup-username"
+        name="username"
+        [(ngModel)]="signupForm.username"
+        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors"
+        placeholder="Enter your username"
+        required
+        aria-required="true"
+        aria-describedby="username-error" />
     </div>
-    <div class="mb-4">
-      <label class="block text-gray-700 mb-1" for="email">Email:</label>
-      <input class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" type="email" id="email" />
+
+    <div>
+      <label class="block text-gray-700 mb-2 font-medium" for="signup-password">
+        Password <span class="text-red-500" aria-label="required">*</span>
+      </label>
+      <input 
+        type="password" 
+        id="signup-password"
+        name="password"
+        [(ngModel)]="signupForm.password"
+        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors"
+        placeholder="Create a strong password"
+        required
+        aria-required="true"
+        aria-describedby="password-error"
+        minlength="8" />
     </div>
-    <div class="mb-4">
-      <label class="block text-gray-700 mb-1" for="password">Password:</label>
-      <input class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" type="password" id="password" />
+
+    <!-- Error Message -->
+    <div *ngIf="signupError" class="p-3 bg-red-50 border border-red-200 rounded-lg" role="alert" aria-live="polite">
+      <p class="text-sm text-red-600" id="signup-submit-error">{{ signupError }}</p>
     </div>
-    <div class="mb-4 flex items-center">
-      <input type="checkbox" id="terms" class="mr-2" />
-      <label for="terms" class="text-gray-700 text-sm">I agree to the <span class="font-medium">Terms and Privacy Policy</span></label>
-    </div>
-    <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold shadow hover:bg-blue-700 transition">Create Account</button>
+   
+    <button 
+      type="submit" 
+      [disabled]="isSigningUp"
+      class="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      aria-describedby="signup-submit-error"
+      [attr.aria-busy]="isSigningUp">
+      <span *ngIf="!isSigningUp">Create Account</span>
+      <span *ngIf="isSigningUp">Creating Account...</span>
+    </button>
   </form>
 
   <!-- Login Form -->
-  <form *ngIf="activeTab === 'login'">
-    <div class="mb-4">
-      <label class="block text-gray-700 mb-1" for="login-email">Email:</label>
-      <input class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" type="email" id="login-email" />
+  <form *ngIf="activeTab === 'login'" (ngSubmit)="onLoginSubmit()" class="space-y-4" novalidate>
+    <div>
+      <label class="block text-gray-700 mb-2 font-medium" for="login-username">
+        Username <span class="text-red-500" aria-label="required">*</span>
+      </label>
+      <input 
+        type="text" 
+        id="login-username"
+        name="username"
+        [(ngModel)]="loginForm.username"
+        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors"
+        placeholder="Enter your username"
+        required
+        aria-required="true"
+        aria-describedby="login-username-error" />
     </div>
-    <div class="mb-4">
-      <label class="block text-gray-700 mb-1" for="login-password">Password:</label>
-      <input class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" type="password" id="login-password" />
+
+    <div>
+      <label class="block text-gray-700 mb-2 font-medium" for="login-password">
+        Password <span class="text-red-500" aria-label="required">*</span>
+      </label>
+      <input 
+        type="password" 
+        id="login-password"
+        name="password"
+        [(ngModel)]="loginForm.password"
+        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors"
+        placeholder="Enter your password"
+        required
+        aria-required="true"
+        aria-describedby="login-password-error" />
+       
     </div>
-    <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold shadow hover:bg-blue-700 transition">Login</button>
+
+    <!-- Error Message -->
+    <div *ngIf="loginError" class="p-3 bg-red-50 border border-red-200 rounded-lg" role="alert" aria-live="polite">
+      <p class="text-sm text-red-600" id="login-submit-error">{{ loginError }}</p>
+    </div>
+
+    <button 
+      type="submit" 
+      [disabled]="isLoggingIn"
+      class="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      aria-describedby="login-submit-error"
+      [attr.aria-busy]="isLoggingIn">
+      <span *ngIf="!isLoggingIn">Sign In</span>
+      <span *ngIf="isLoggingIn">Signing In...</span>
+    </button>
+    
   </form>
 
-  <div class="mt-6 text-center text-gray-500">
-    <ng-container *ngIf="activeTab === 'signup'">
-      Already have an account?
-      <a href="#" class="text-blue-600 font-medium hover:underline" (click)="switchTab('login', $event)">Sign in</a>
-    </ng-container>
-    <ng-container *ngIf="activeTab === 'login'">
-      Don't have an account?
-      <a href="#" class="text-blue-600 font-medium hover:underline" (click)="switchTab('signup', $event)">Sign up</a>
-    </ng-container>
-  </div>
-</div>
+  <!-- Tab Switch -->
+  <footer class="mt-8 text-center">
+    <p class="text-gray-600">
+      <ng-container *ngIf="activeTab === 'signup'">
+        Already have an account?
+        <button 
+          type="button"
+          class="text-blue-600 font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 rounded"
+          (click)="switchTab('login')"
+          aria-label="Switch to login form">
+          Sign in
+        </button>
+      </ng-container>
+      <ng-container *ngIf="activeTab === 'login'">
+        Don't have an account?
+        <button 
+          type="button"
+          class="text-blue-600 font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 rounded"
+          (click)="switchTab('signup')"
+          aria-label="Switch to signup form">
+          Sign up
+        </button>
+      </ng-container>
+    </p>
+  </footer>
+</main>

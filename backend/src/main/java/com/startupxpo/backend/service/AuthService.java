@@ -38,13 +38,14 @@ public class AuthService {
 
     public ResponseEntity<?> registerUser(SignupRequest signupRequest) {
         try {
-            if (userRepository.existsByEmail(signupRequest.getEmail())) {
-                return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
+            if (userRepository.existsByUsername(signupRequest.getUsername())) {
+                return ResponseEntity.badRequest().body(new MessageResponse("Error: username is already in use!"));
             }
             
             User user = new User();
-            user.setEmail(signupRequest.getEmail());
+            user.setUsername(signupRequest.getUsername());
             user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+            user.setRole(signupRequest.getRole());
 
             userRepository.save(user);
 
@@ -59,7 +60,7 @@ public class AuthService {
             // Use Spring Security's AuthenticationManager for proper authentication
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                    loginRequest.getEmail(), 
+                    loginRequest.getUsername(),
                     loginRequest.getPassword()
                 )
             );
@@ -71,12 +72,13 @@ public class AuthService {
             String jwtToken = jwtUtil.generateToken(userDetails);
             
             // Create login response
-            LoginResponse loginResponse = new LoginResponse(
-                jwtToken,
-                "Bearer",
-                userDetails.getUsername(),
-                "Login successful!"
-            );
+            // use builder pattern for LoginResponse
+            LoginResponse loginResponse = LoginResponse.builder()
+                    .token(jwtToken)
+                    .username(userDetails.getUsername())
+                    .role(userDetails.getAuthorities().toString())
+                    .message("Login successful")
+                    .build();
             
             return ResponseEntity.ok(loginResponse);
             

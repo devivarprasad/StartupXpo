@@ -5,6 +5,9 @@ import { FormsModule } from '@angular/forms';
 interface User {
   id: number;
   name: string;
+  lastMessage?: string;
+  unreadCount?: number;
+  status?: string;
 }
 
 interface MessageItem {
@@ -15,6 +18,7 @@ interface MessageItem {
 
 @Component({
   selector: 'app-message',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './message.html',
   styleUrl: './message.css'
@@ -23,9 +27,27 @@ export class Message {
   @Input() activeTab: string = '';
 
   users: User[] = [
-    { id: 1, name: 'Jane Investor' },
-    { id: 2, name: 'John Angel' },
-    { id: 3, name: 'Alice VC' }
+    { 
+      id: 1, 
+      name: 'Jane Investor', 
+      lastMessage: 'Hi, I am interested in your idea!',
+      unreadCount: 2,
+      status: 'Online'
+    },
+    { 
+      id: 2, 
+      name: 'John Angel', 
+      lastMessage: 'Can you share more details?',
+      unreadCount: 0,
+      status: 'Online'
+    },
+    { 
+      id: 3, 
+      name: 'Alice VC', 
+      lastMessage: 'Let\'s schedule a call.',
+      unreadCount: 1,
+      status: 'Away'
+    }
   ];
 
   selectedUser: User | null = null;
@@ -38,7 +60,7 @@ export class Message {
       { from: 'John Angel', text: 'Can you share more details?', time: '09:30 AM' }
     ],
     3: [
-      { from: 'Alice VC', text: 'Let’s schedule a call.', time: 'Yesterday' }
+      { from: 'Alice VC', text: 'Let\'s schedule a call.', time: 'Yesterday' }
     ]
   };
   newMessage: string = '';
@@ -59,5 +81,25 @@ export class Message {
       });
       this.newMessage = '';
     }
+  }
+
+  startVideoCall() {
+    if (this.selectedUser) {
+      console.log('Starting video call with:', this.selectedUser.name);
+    }
+  }
+
+  startVoiceCall() {
+    if (this.selectedUser) {
+      console.log('Starting voice call with:', this.selectedUser.name);
+    }
+  }
+
+  trackByUserId(index: number, user: User): number {
+    return user.id;
+  }
+
+  trackByMessageId(index: number, message: MessageItem): string {
+    return message.text + message.time;
   }
 }
