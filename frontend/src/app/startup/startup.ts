@@ -1,91 +1,98 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { lastValueFrom } from 'rxjs';
 
-/**
- * Interface for a startup item
- */
-export interface StartupItem {
-  id: string;
-  name: string;
-  description: string;
-  industry: string;
-  location: string;
-  founder: string;
-  funding: string;
+// Define the shape of the data based on your JSON response
+interface Startup {
+  id: number;
+  startupName: string;
+  shortDescription: string;
+  category: string;
+  funding: number;
+  s3Key: string;
+  originalFileName: string;
+  userId: number | null;
 }
 
 @Component({
   selector: 'app-startup',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   templateUrl: './startup.html',
-  styleUrl: './startup.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./startup.css']
 })
-export class StartupComponent {
-  /** The active tab from parent */
-  @Input() activeTab: string = '';
+export class StartupComponent implements OnInit {
 
-  /** Search term for filtering startups */
-  searchTerm = '';
-  /** Selected industry filter */
-  selectedIndustry = '';
-  /** Selected location filter */
-  selectedLocation = '';
-  /** Current page for pagination */
-  currentPage = 1;
-  /** Total number of pages */
-  totalPages = 1;
+  startups: Startup[] = [];
+  isLoading = true;
+  
+  // Tracks which specific startup is currently downloading (to show spinner/text)
+  downloadingId: number | null = null;
 
-  /** List of saved startups */
-  savedStartups: StartupItem[] = [];
-  /** List of filtered startups */
-  filteredStartups: StartupItem[] = [];
+  // Adjust to your backend port
+  private apiUrl = 'http://localhost:8080/api';
 
-  /** Available industries */
-  readonly industries: string[] = ['Healthcare', 'AI/ML', 'Analytics', 'Fintech', 'E-commerce', 'Education'];
-  /** Available locations */
-  readonly locations: string[] = ['San Francisco, CA', 'New York, NY', 'Austin, TX', 'Boston, MA', 'Seattle, WA'];
+  constructor(private http: HttpClient) {}
 
-  /** Handles search input */
-  onSearch(): void {
-    // TODO: Implement search logic
+  ngOnInit(): void {
+    this.fetchStartups();
   }
 
-  /** Handles filter changes */
-  onFilterChange(): void {
-    // TODO: Implement filter logic
+  fetchStartups() {
+    this.isLoading = true;
+  
+    this.http.get<Startup[]>(`${this.apiUrl}/startups/all`)
+      .subscribe({
+        next: (data) => {
+          this.startups = data;
+        },
+        error: (error) => {
+          console.error('Error fetching startups:', error);
+          alert('Could not load startups.');
+        },
+        complete: () => {
+          this.isLoading = false;
+        }
+      });
   }
+  
+  async downloadPitchDeck(startup: Startup) {
+    if (this.downloadingId === startup.id) return; // Prevent double clicks
 
-  /** View a startup's details */
-  viewStartup(startupId: string): void {
-    // TODO: Implement view logic
-  }
+    this.downloadingId = startup.id;
 
-  /** Connect with a startup */
-  connectWithStartup(startupId: string): void {
-    // TODO: Implement connect logic
-  }
+    try {
+      console.log(`Requesting download link for: ${startup.originalFileName}`);
 
-  /** Save a startup */
-  saveStartup(startupId: string): void {
-    // TODO: Implement save logic
-  }
+      // 1. Call your existing backend endpoint to get the Presigned URL
+      // Endpoint: /api/files/presigned-download?key=...&fileName=...
+      const params = {
+        key: startup.s3Key,
+        fileName: startup.originalFileName
+      };
 
-  /** Check if a startup is saved */
-  isStartupSaved(startupId: string): boolean {
-    return this.savedStartups.some(startup => startup.id === startupId);
-  }
+      const response = await lastValueFrom(
+        this.http.get<{ downloadUrl: string }>(`${this.apiUrl}/files/presigned-download`, { params })
+      );
 
-  /** Get page numbers for pagination */
-  getPageNumbers(): number[] {
-    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
-  }
+      // 2. Trigger the download in the browser
+      // We create a temporary hidden link and click it programmatically
+      const link = document.createElement('a');
+      link.href = response.downloadUrl;
+      // The 'download' attribute is technically redundant here because 
+      // the S3 URL already has 'Content-Disposition: attachment', 
+      // but it's good practice.
+      link.download = startup.originalFileName; 
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-  /** Go to a specific page */
-  goToPage(page: number): void {
-    this.currentPage = page;
-    // TODO: Implement pagination logic
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Failed to download the file. Please try again.');
+    } finally {
+      this.downloadingId = null; // Reset button state
+    }
   }
 }

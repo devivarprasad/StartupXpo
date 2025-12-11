@@ -4,9 +4,12 @@ import com.startupxpo.backend.DTO.StartupSubmissionDTO;
 import com.startupxpo.backend.model.Startup;
 import com.startupxpo.backend.repository.StartupRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/startups")
 public class StartupController {
 
     private final StartupRepository startupRepository;
@@ -33,6 +36,12 @@ public class StartupController {
         Startup savedStartup = startupRepository.save(startup);
 
         return ResponseEntity.ok(savedStartup);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Startup>> getAllStartups() {
+        List<Startup> startups = startupRepository.findAll();
+        return ResponseEntity.ok(startups);
     }
 
 }

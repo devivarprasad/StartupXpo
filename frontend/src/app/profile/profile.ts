@@ -3,7 +3,7 @@ import { ApiService } from '../services/api';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-interface ProfileData {
+export interface ProfileData {
   id: number;
   username: string;
   email: string | null;

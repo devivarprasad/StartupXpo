@@ -13,7 +13,13 @@
     <!-- Dashboard Overview -->
     
     <!-- Startup Management -->
-    
+    <section
+      *ngIf="activeTab === 'startup'"
+      class="dashboard-section animate-fade-in"
+      role="region"
+      aria-labelledby="startup-title">
+      <app-startup></app-startup>
+    </section>
 
     <!-- Idea Upload -->
     <section
@@ -30,7 +36,14 @@
     
 
     <!-- Messages -->
-    
+    <section
+      *ngIf="activeTab === 'messages'"
+      class="dashboard-section animate-fade-in"
+      role="region"
+      aria-labelledby="messages-title">
+      <h2 id="messages-title" class="dashboard-section-title sr-only">Messages</h2>
+      <app-message></app-message>
+    </section>
 
     <!-- User Profile -->
     <section

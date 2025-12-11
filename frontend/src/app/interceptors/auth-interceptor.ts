@@ -4,7 +4,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('auth_token');
   
   // Skip login/signup requests
-  if (req.url.includes('/api/auth/login') || req.url.includes('/api/auth/signup')) {
+  if (req.url.includes('/api/auth/login') || req.url.includes('/api/auth/signup') || req.url.includes('amazonaws.com')) {
     return next(req);
   }
 

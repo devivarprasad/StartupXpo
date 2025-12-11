@@ -5,7 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Sidebar } from '../sidebar/sidebar';
 import { Profile } from '../profile/profile';
 import { UploadIdeaComponent } from '../upload-idea/upload-idea';
-
+import { StartupComponent } from '../startup/startup';
+import { MessageComponent } from '../message/message';
 /**
  * Tab item interface for dashboard navigation
  */
@@ -18,7 +19,7 @@ export interface TabItem {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, Sidebar, Profile, UploadIdeaComponent ],
+  imports: [CommonModule, FormsModule, Sidebar, Profile, UploadIdeaComponent, StartupComponent, MessageComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
   // changeDetection: ChangeDetectionStrategy.OnPush // Removed for simpler change detection
@@ -38,7 +39,7 @@ export class Dashboard implements OnInit {
 
   /** Founder dashboard tabs */
   readonly founderTabs: TabItem[] = [
-    { key: 'myStartups', label: 'My Startups', icon: 'building' },
+    { key: 'startup', label: 'My Startups', icon: 'building' },
     { key: 'upload', label: 'Upload Idea', icon: 'upload' },
     { key: 'receivedRequests', label: 'Received Requests', icon: 'requests' },
     { key: 'messages', label: 'Messages', icon: 'messages' },
@@ -48,7 +49,7 @@ export class Dashboard implements OnInit {
 
   /** Investor dashboard tabs */
   readonly investorTabs: TabItem[] = [
-    { key: 'browse', label: 'Browse Startups', icon: 'browse' },
+    { key: 'startup', label: 'Browse Startups', icon: 'browse' },
     { key: 'saved', label: 'Saved Startups', icon: 'saved' },
     { key: 'sentRequests', label: 'Sent Requests', icon: 'bell' },
     { key: 'messages', label: 'Messages', icon: 'messages' },

@@ -33,26 +33,25 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                                     FilterChain chain) throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
+        String tokenFromWebSocket = request.getParameter("token");
         logger.info("Authorization header received: {}",authHeader);
         String requestURI = request.getRequestURI();
 
         logger.info("Processing request: {} with auth header: {}", requestURI, authHeader != null ? "present" : "missing");
-        if (authHeader != null) {
-            String masked = authHeader.length() > 20 ? authHeader.substring(0, 10) + "..." + authHeader.substring(authHeader.length()-7) : authHeader;
-            logger.info("Authorization header (masked): {}", masked);
-        }
 
         String username = null;
         String jwt = null;
-
+        if(tokenFromWebSocket!=null){
+            jwt = tokenFromWebSocket;
+        }
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
-            try {
-                username = jwtUtil.extractUsername(jwt);
-                logger.debug("Extracted username from JWT: {}", username);
-            } catch (Exception e) {
-                logger.error("Error extracting username from JWT: {}", e.getMessage());
-            }
+        }
+        try {
+            username = jwtUtil.extractUsername(jwt);
+            logger.debug("Extracted username from JWT: {}", username);
+        } catch (Exception e) {
+            logger.error("Error extracting username from JWT: {}", e.getMessage());
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

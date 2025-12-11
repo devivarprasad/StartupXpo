@@ -81,18 +81,6 @@ public class UserController {
         return ResponseEntity.ok(toUserResponse(saved));
     }
 
-    // GET /api/users/{id} - fetch a user by id (public)
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Long id) {
-        var optUser = userRepository.findById(id);
-        if (optUser.isPresent()) {
-            return ResponseEntity.ok(toUserResponse(optUser.get()));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new MessageResponse("User not found"));
-        }
-    }
-
     private UserResponse toUserResponse(User user) {
         return new UserResponse(
                 user.getId(),
@@ -102,5 +90,14 @@ public class UserController {
                 user.getLocation(),
                 user.getBio()
         );
+    }
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllUsers(Principal principal) {
+        String username = principal.getName();
+        var users = userRepository.findAll();
+        var userResponses = users.stream().filter(user->!user.getUsername().equals(username))
+                .map(this::toUserResponse)
+                .toList();
+        return ResponseEntity.ok(userResponses);
     }
 }

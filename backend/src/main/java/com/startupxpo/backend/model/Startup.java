@@ -25,6 +25,7 @@ public class Startup {
 
     // Store original filename for the "Save As" feature later
     private String originalFileName;
+    private Long userId;
 
     // Getters and Setters...
 }
